@@ -117,6 +117,7 @@ public class Main extends JPanel {
    
    public int port = 54321; 
    public String host = "localhost";
+   int ping;
    
    public static int menuItem = 0;
    
@@ -135,6 +136,7 @@ public class Main extends JPanel {
 	   	setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 	   	setFocusable(true);	 
 	   	input = new Klawisze(this);
+	   	Sound sound = new Sound();
 	   	
 	   	GameState = ViewStates.InGame;
 	   	
@@ -162,12 +164,15 @@ public class Main extends JPanel {
    public void Loading(){
 	   ServerUp=true;
 	   isPainted=false;
-	   while(true){
+	   while(ServerUp){
 		   repaint();
 		   try{Thread.sleep(OPTIMAL_TIME/1000000);}catch (Exception e) {}
-		   if(isServer&&sendMap)server.sendData(("2 "+Main.mapaS+" ").getBytes());
+		   if(isServer&&sendMap){
+			   server.sendData(("2 "+Main.mapaS+" ").getBytes());
+		   }
 		   if(!isServer) client.sendData("1 ".getBytes());
 		   if(polaczono){
+			   sendMap=false;
 			   gameLoop();
 			   break;
 		   }
@@ -175,6 +180,7 @@ public class Main extends JPanel {
    }
    
    public void Host(){
+	   System.out.println("TO JEST SERVER!");
 	   server = new Server(port);
 	   server.start();
 	   isServer=true;
@@ -189,7 +195,7 @@ public class Main extends JPanel {
 	   
 	   client = new Client(host, port);
 	   client.start();
-	   client.sendData("1 ".getBytes());
+	   client.sendData("1 0 0 0 0 0 0 0 0 ".getBytes());
 	   Loading();
    }
    
@@ -232,6 +238,8 @@ public class Main extends JPanel {
 				   lastFpsTime = 0;
 				   AktualneFPSy = fps;
 				   fps = 0;
+				   if(isServer)ping = (int)server.ping;
+				   else ping = (int)client.ping;
 		         }
 			   
 	         // we want each frame to take 10 milliseconds, to do this
@@ -693,31 +701,30 @@ public class Main extends JPanel {
 				   g.drawImage(Lose, 0, 0, null);
 				   server.sendData("4".getBytes());
 				   gameRunning=false;
+				   info=false;
 			   }
 			   if(server.win){	
 				   g.drawImage(Win, 0, 0, null);
 				   gameRunning=false;
+				   info=false;
 			   }
 		   }
 		   else{
 			   if(client.win){	
 				   g.drawImage(Win, 0, 0, null);
 				   gameRunning=false;
+				   info=false;
 			   }
 			   if(player2.killed){	
 				   g.drawImage(Lose, 0, 0, null);
 				   client.sendData("4".getBytes());
 				   gameRunning=false;
+				   info=false;
 			   }
 		   }
 		   
 	   }
 	   if(menuRunning && !ServerUp){
-		   //if(!isPainted){
-		//	   g.setColor(Color.black);
-		//	   g.fill3DRect(-1, -1, CANVAS_WIDTH, CANVAS_HEIGHT, true);
-		//	   isPainted = true;
-		 //  }
 		   g.setColor(Color.black);
 		   g.fill3DRect(-1, -1, CANVAS_WIDTH, CANVAS_HEIGHT, true);
   			switch(menuItem){
@@ -774,11 +781,13 @@ public class Main extends JPanel {
 	   if (info)
        {
 		   g.setColor(Color.yellow);
-		   g.setFont(new Font(" ", Font.PLAIN, 16));
+		   g.setFont(new Font("Comic Sans", Font.BOLD, 16));
 		   g.drawString("Total Memory: "+String.valueOf(Runtime.getRuntime().totalMemory()/(1024*1024))+" MB", 650, 20);
 		   g.drawString("Free Memory: "+String.valueOf(Runtime.getRuntime().freeMemory()/(1024*1024))+" MB", 650, 50);
-		   g.drawString("FPS: "+AktualneFPSy, 700, 80);
-		   
+		   if(gameRunning){
+			   g.drawString("FPS: "+AktualneFPSy, 650, 80);
+			   g.drawString("Ping: "+ping+"ms", 730, 80);			   
+		   }	   
        }
    }
    public Image LoadImage(String imgFilePath) {

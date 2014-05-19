@@ -56,7 +56,9 @@ public class Klawisze implements KeyListener{
 			}
 		}
 		if(!Main.menuRunning && !Main.gameRunning){
-			if(e.getKeyCode()==KeyEvent.VK_ESCAPE || e.getKeyCode()==KeyEvent.VK_ENTER || e.getKeyCode()==KeyEvent.VK_SPACE)System.exit(0);
+			if(e.getKeyCode()==KeyEvent.VK_ESCAPE || e.getKeyCode()==KeyEvent.VK_ENTER){
+				System.exit(0);
+			}
 		}
 	}
 

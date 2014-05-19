@@ -45,8 +45,7 @@ public class Client extends Thread{
 					socket.setSoTimeout(5000);
 					socket.receive(packet);
 					input = new String(packet.getData());
-					
-					System.out.println("Received packet: "+input);
+					System.out.println("Received packet: "+input+" ");
 					dane=input.split(" ");
 					
 					
@@ -113,7 +112,7 @@ public class Client extends Thread{
 								  Main.plansza[i][j]=4;
 							  }
 						   }
-					   sendData("3 ".getBytes());
+					   sendData("3 -100 -100 0 0 0 0 0 0 0 0 0".getBytes());
 					break;
 				case 3:
 					if(Main.polaczono==false)Main.polaczono=true;
@@ -125,10 +124,9 @@ public class Client extends Thread{
 						Main.boombMoc[Integer.parseInt(dane[5])][Integer.parseInt(dane[6])]=Integer.parseInt(dane[4]);
 						Main.plansza[Integer.parseInt(dane[5])][Integer.parseInt(dane[6])]=12;
 						Main.boombmap[Integer.parseInt(dane[5])][Integer.parseInt(dane[6])]=System.nanoTime();//w przyszlosci -Ping
-						
-						picTime	= Long.parseLong(dane[7]);
-						ping = (System.nanoTime() - Long.parseLong(dane[8]))/2000000;
 					}
+					picTime	= Long.parseLong(dane[7]);
+					ping = (System.nanoTime() - Long.parseLong(dane[8]))/2000000;
 					break;
 				case 4:
 					win = true;
@@ -142,6 +140,7 @@ public class Client extends Thread{
 	public void sendData(byte[] data){
 		DatagramPacket packet = new DatagramPacket(data, data.length, host, port);
 		try {
+			System.out.println("Sending data: "+new String(packet.getData())+" ");
 			socket.send(packet);
 		} 
 		catch (IOException e) {
