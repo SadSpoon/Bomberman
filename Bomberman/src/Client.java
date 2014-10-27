@@ -21,13 +21,13 @@ public class Client extends Thread{
  	
 	public Client(String Host, int Port){
 		
-		this.port=Port;
+		this.port=Port+1;
 		
 		try {
 			socket = new DatagramSocket(port);
 			this.host=InetAddress.getByName(Host);
 		}
-		catch (SocketException e) {System.out.println("Wyst�pi� problem z socketem na porcie "+Port);} 
+		catch (SocketException e) {System.out.println("Wyst�pi� problem z socketem na porcie "+port);} 
 		catch (UnknownHostException e) {System.out.println("Nie odnaleziono hosta: "+Host);}
 	}
 	
@@ -45,7 +45,7 @@ public class Client extends Thread{
 					socket.setSoTimeout(5000);
 					socket.receive(packet);
 					input = new String(packet.getData());
-					System.out.println("Received packet: "+input+" ");
+					//System.out.println("Received packet: "+input+" ");
 					dane=input.split(" ");
 					
 					
@@ -138,9 +138,9 @@ public class Client extends Thread{
 	}
 	
 	public void sendData(byte[] data){
-		DatagramPacket packet = new DatagramPacket(data, data.length, host, port);
+		DatagramPacket packet = new DatagramPacket(data, data.length, host, port-1);
 		try {
-			System.out.println("Sending data: "+new String(packet.getData())+" ");
+			//System.out.println("Sending data: "+new String(packet.getData())+" ");
 			socket.send(packet);
 		} 
 		catch (IOException e) {

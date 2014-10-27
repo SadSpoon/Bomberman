@@ -136,7 +136,7 @@ public class Main extends JPanel {
 	   	setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
 	   	setFocusable(true);	 
 	   	input = new Klawisze(this);
-	   	Sound sound = new Sound();
+	   	//Sound sound = new Sound();
 	   	
 	   	GameState = ViewStates.InGame;
 	   	

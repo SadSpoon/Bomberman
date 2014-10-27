@@ -31,7 +31,7 @@ public class Server extends Thread{
 			while(true){
 				socket.receive(packet);
 				String input = new String(packet.getData());
-				System.out.println("Recived: "+input);
+				//System.out.println("Recived: "+input);
 				if(IP==null){
 					IP = packet.getAddress();
 				}
@@ -128,9 +128,9 @@ public class Server extends Thread{
 	public void sendData(byte[] data){
 		DatagramPacket packet;
 		try {
-			packet = new DatagramPacket(data, data.length, IP, port);
+			packet = new DatagramPacket(data, data.length, IP, port+1);
 			socket.send(packet);
-			System.out.println("Sending data: "+new String(packet.getData())+" ");
+			//System.out.println("Sending data: "+new String(packet.getData())+" ");
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}
